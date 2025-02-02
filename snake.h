@@ -28,4 +28,10 @@ void destroyGamestate(gamestate*);
 
 void update(gamestate *);
 
+void draw(SDL_Renderer *, gamestate*);
+
+void drawSnake(SDL_Renderer *, gamestate *);
+
+void drawBorder(SDL_Renderer *,int,int);
+
 #endif

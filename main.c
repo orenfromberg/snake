@@ -8,6 +8,8 @@
 #include "snake.h"
 
 int main(int argc, char* argv[]) {
+    printf("%d,%p",argc,argv);
+
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         SDL_Log("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
         return 1;
