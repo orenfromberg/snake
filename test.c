@@ -4,13 +4,13 @@
 #include "linkedlist.h"
 
 void main(int argc, char * argv) {
-    gamestate * state = createGamestate(3);
+    Game * _game = createGame(3,640,480);
 
     for (int i = 0; i < 10; i++) {
-        update(state);
+        update(_game);
     }
 
     // destroyList(head);
-    destroyGamestate(state);
+    destroyGame(_game);
     return 0;
 }

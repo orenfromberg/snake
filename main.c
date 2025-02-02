@@ -21,18 +21,18 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); // Use hardware acceleration if available
-    if (renderer == NULL) {
+    SDL_Renderer* r = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); // Use hardware acceleration if available
+    if (r == NULL) {
         SDL_Log("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
         return 1;
     }
 
     // Update the screen
-    SDL_RenderPresent(renderer);
+    SDL_RenderPresent(r);
 
     SDL_Event e;
 
-    gamestate * state = createGamestate(10,(WINDOW_WIDTH/20)-1,(WINDOW_HEIGHT/20-1));
+    Game * game = createGame(10,(WINDOW_WIDTH/20)-1,(WINDOW_HEIGHT/20-1));
 
     // process_input();
 
@@ -46,19 +46,19 @@ int main(int argc, char* argv[]) {
                 switch (e.key.keysym.sym) {
                     case SDLK_UP:
                         printf("Up arrow pressed!\n");
-                        state->dir = UP;
+                        game->dir = UP;
                         break;
                     case SDLK_DOWN:
                         printf("Down arrow pressed!\n");
-                        state->dir = DOWN;
+                        game->dir = DOWN;
                         break;
                     case SDLK_LEFT:
                         printf("Left arrow pressed!\n");
-                        state->dir = LEFT;
+                        game->dir = LEFT;
                         break;
                     case SDLK_RIGHT:
                         printf("Right arrow pressed!\n");
-                        state->dir = RIGHT;
+                        game->dir = RIGHT;
                         break;
                     case SDLK_ESCAPE:  // Check for Escape key
                         printf("Escape key pressed. Exiting.\n");
@@ -71,14 +71,14 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        update(state);
+        update(game);
 
-        draw(renderer, state);
+        draw(r, game);
 
         SDL_Delay(32);
     }
 
-    SDL_DestroyRenderer(renderer);
+    SDL_DestroyRenderer(r);
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;

@@ -1,10 +1,16 @@
 #ifndef SNAKE_H
 #define SNAKE_H
-
+#include <SDL2/SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
 #include "linkedlist.h"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
+
+
 
 typedef enum {
     NONE = 0,  // No arrow key pressed
@@ -20,17 +26,17 @@ typedef struct {
     int max_length;
     int cur_length;
     direction dir;
-} gamestate;
+} Game;
 
-gamestate* createGamestate(int,int,int);
+Game* createGame(int,int,int);
 
-void destroyGamestate(gamestate*);
+void destroyGame(Game*);
 
-void update(gamestate *);
+void update(Game *);
 
-void draw(SDL_Renderer *, gamestate*);
+void draw(SDL_Renderer *, Game*);
 
-void drawSnake(SDL_Renderer *, gamestate *);
+void drawSnake(SDL_Renderer *, Game *);
 
 void drawBorder(SDL_Renderer *,int,int);
 
