@@ -30,45 +30,11 @@ int main(int argc, char* argv[]) {
     // Update the screen
     SDL_RenderPresent(r);
 
-    SDL_Event e;
-
     Game * game = createGame(10,(WINDOW_WIDTH/20)-1,(WINDOW_HEIGHT/20-1));
 
-    // process_input();
-
-    bool quit = false;
-
-    while (!quit) {
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
-                quit = true;
-            } else if (e.type == SDL_KEYDOWN) {
-                switch (e.key.keysym.sym) {
-                    case SDLK_UP:
-                        printf("Up arrow pressed!\n");
-                        game->dir = UP;
-                        break;
-                    case SDLK_DOWN:
-                        printf("Down arrow pressed!\n");
-                        game->dir = DOWN;
-                        break;
-                    case SDLK_LEFT:
-                        printf("Left arrow pressed!\n");
-                        game->dir = LEFT;
-                        break;
-                    case SDLK_RIGHT:
-                        printf("Right arrow pressed!\n");
-                        game->dir = RIGHT;
-                        break;
-                    case SDLK_ESCAPE:  // Check for Escape key
-                        printf("Escape key pressed. Exiting.\n");
-                        quit = true;
-                        break;
-                    default:
-                        // Handle other key presses if needed.
-                        break;
-                }
-            }
+    while (1) {
+        if (process_input(game)) {
+            break;
         }
 
         update(game);

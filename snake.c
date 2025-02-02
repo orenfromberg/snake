@@ -7,6 +7,7 @@ Game * createGame(int max_length, int x, int y) {
     g->head = createNode(x,y);
     g->tail = g->head;
     g->dir = NONE;
+    g->state = PLAYING;
 
     // printSnake(g);
     return g;    
@@ -20,12 +21,20 @@ void printNode(Node * node) {
     printf("addr=%p, next=%p, prev=%p, (%d, %d)\n", node, node->next, node->prev, node->x, node->y);
 }
 
+void draw_playing(SDL_Renderer * r, Game* g) {
+    drawBorder(r,WINDOW_WIDTH,WINDOW_HEIGHT);
+    drawSnake(r, g);
+}
+
 void draw(SDL_Renderer * r, Game* g) {
     SDL_SetRenderDrawColor(r, 0, 0, 0, 255); // RGBA: Red, Green, Blue, Alpha
     SDL_RenderClear(r);
 
-    drawBorder(r,WINDOW_WIDTH,WINDOW_HEIGHT);
-    drawSnake(r, g);
+    switch(g->state) {
+        case PLAYING:
+            draw_playing(r,g);
+            break;
+    }
 
     // Update the screen
     SDL_RenderPresent(r);
@@ -97,7 +106,7 @@ void printSnake(Game * g) {
     printf("tail ^\n");
 }
 
-void update(Game * g) {
+void update_playing(Game * g) {
     int dx = 0, dy = 0;
     switch(g->dir) {
         case UP:
@@ -141,4 +150,56 @@ void update(Game * g) {
         g->tail->next = NULL;
         destroyNode(tail);
     }
+}
+
+void update(Game * g) {
+    switch(g->state) {
+        case PLAYING:
+            update_playing(g);
+            break;
+    }
+}
+
+int process_input_playing(Game * game) {
+    SDL_Event e;
+    while (SDL_PollEvent(&e) != 0) {
+        if (e.type == SDL_QUIT) {
+            return 1;
+        } else if (e.type == SDL_KEYDOWN) {
+            switch (e.key.keysym.sym) {
+                case SDLK_UP:
+                    printf("Up arrow pressed!\n");
+                    game->dir = UP;
+                    break;
+                case SDLK_DOWN:
+                    printf("Down arrow pressed!\n");
+                    game->dir = DOWN;
+                    break;
+                case SDLK_LEFT:
+                    printf("Left arrow pressed!\n");
+                    game->dir = LEFT;
+                    break;
+                case SDLK_RIGHT:
+                    printf("Right arrow pressed!\n");
+                    game->dir = RIGHT;
+                    break;
+                case SDLK_ESCAPE:  // Check for Escape key
+                    printf("Escape key pressed. Exiting.\n");
+                    return 1;
+                    break;
+                default:
+                    // Handle other key presses if needed.
+                    break;
+            }
+        }
+    }
+    return 0;
+}
+
+int process_input(Game * g) {
+    switch(g->state) {
+        case PLAYING:
+            return process_input_playing(g);
+    }
+    return 0;
 }

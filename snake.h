@@ -18,14 +18,24 @@ typedef enum {
     DOWN,
     LEFT,
     RIGHT
-} direction;
+} Direction;
+
+typedef enum {
+    INIT = 0,
+    PLAYING,
+    DIED
+} State;
 
 typedef struct {
     Node * head;
     Node * tail;
     int max_length;
     int cur_length;
-    direction dir;
+    Direction dir;
+    State state;
+
+    //TODO add window height, width
+    // TODO add framerate speed/delay
 } Game;
 
 Game* createGame(int,int,int);
@@ -39,5 +49,7 @@ void draw(SDL_Renderer *, Game*);
 void drawSnake(SDL_Renderer *, Game *);
 
 void drawBorder(SDL_Renderer *,int,int);
+
+int process_input(Game *);
 
 #endif
