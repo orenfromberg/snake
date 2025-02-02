@@ -1,0 +1,97 @@
+# Object files
+*.o
+*.obj
+*.exe
+*.out
+*.app
+
+# Libraries
+*.lib
+*.a
+*.so
+*.dll
+*.dylib
+
+# Temporary files and artifacts
+*~
+\#*
+*.swp
+*.tmp
+.DS_Store
+.vscode/
+.idea/
+*.ipr
+*.iws
+*.iml
+
+# Compiler and build system specific files
+.cache
+build/
+bin/
+Debug/
+Release/
+x64/
+x86/
+*.suo
+*.sdf
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.user
+*.opensdf
+
+# Testing related
+*.gcda
+*.gcno
+*.gcov
+
+# Packaging and distribution
+*.zip
+*.tar
+*.gz
+*.tar.gz
+
+# Version control specific (if applicable)
+.svn
+.git  # Usually already ignored but good to be explicit.
+
+# Editor and IDE files (adjust as needed)
+*~
+\#*
+*.swp
+.DS_Store
+.vscode/
+.idea/
+*.ipr
+*.iws
+*.iml
+
+# OS generated files
+Thumbs.db
+*.bak
+*.log
+
+# Anything else you want to exclude
+# Example: specific files or directories
+my_secret_file.txt
+private_data/
+
+# If you have very large files that should never be committed
+# but are needed locally, uncomment the following line and add them
+# /large_files/
+
+# If you use CMake
+CMakeLists.txt.user
+CMakeFiles/
+_CPack_Packages/
+Testing/Temporary/
+
+# If you use CLion
+.idea/
+
+# If you use Visual Studio
+.vs/
+
+# exe
+snake
+test
