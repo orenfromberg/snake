@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
     // Update the screen
     SDL_RenderPresent(r);
 
-    Game * game = createGame(10,(WINDOW_WIDTH/20)-1,(WINDOW_HEIGHT/20-1));
+    Game * game = createGame(1,(GRID_WIDTH/2)-1,(GRID_HEIGHT/2-1));
 
     game->title_screen = texture;
     game->title_text = text;

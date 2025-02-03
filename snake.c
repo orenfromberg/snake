@@ -9,7 +9,7 @@ void food_init(Game * g) {
 }
 
 void reset_game(Game * g, int snake_length, int x, int y) {
-    g->snake_length = 10;
+    g->snake_length = 1;
     for(int i = 0; i < snake_length; i++) {
         g->snake[i].x = x;
         g->snake[i].y = y;
@@ -56,7 +56,7 @@ void draw_died(SDL_Renderer* r, Game* g) {
 
 void draw_score(SDL_Renderer* r, Game* g) {
     char c_score[20];
-    sprintf(c_score, "%020d", g->score);
+    sprintf(c_score, "%05d", g->score);
     SDL_Color foreground = { 255, 255, 255, 255 };
     SDL_Surface * score = TTF_RenderText_Solid(g->font, c_score, foreground);
     SDL_Texture* text = SDL_CreateTextureFromSurface(r, score);
@@ -198,12 +198,19 @@ void update_playing(Game * g) {
 
     // check for collisions with border
     if(g->snake[0].x == 0 || g->snake[0].y == 0
-        || g->snake[0].x == GRID_WIDTH || g->snake[0].y == GRID_HEIGHT) {
+        || g->snake[0].x == GRID_WIDTH-1 || g->snake[0].y == GRID_HEIGHT-1) {
         g->state = DIED;
         return;       
     }
 
     // check for collisions with snake
+    for(int i = 1; i < g->snake_length; i++) {
+        if (g->snake[0].x == g->snake[i].x && 
+            g->snake[0].y == g->snake[i].y) {
+                g->state = DIED;
+                return;
+            }
+    }
 
     // check for collisions with food
     for(int i = 0; i < FOOD_LEN; i++) {
@@ -268,7 +275,7 @@ int process_input_died(Game * game) {
         if (e.type == SDL_QUIT) {
             return 1;
         } else if (e.type == SDL_KEYDOWN) {
-            reset_game(game, 10, (GRID_WIDTH/2)-1, (GRID_HEIGHT/2)-1);
+            reset_game(game, 1, (GRID_WIDTH/2)-1, (GRID_HEIGHT/2)-1);
             return 0;
         }
     }
