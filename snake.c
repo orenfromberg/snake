@@ -1,9 +1,17 @@
 #include "snake.h"
 
-Game * createGame(int _len, int x, int y) {
+void food_init(Game * g) {
+    for (int i = 0; i < FOOD_LEN; i++) {
+        g->food[i].x = rand() % GRID_WIDTH;
+        g->food[i].y = rand() % GRID_HEIGHT;
+        printf("food %d: (%d,%d)\n", i, g->food[i].x, g->food[i].y);
+    }
+}
+
+Game * createGame(int snake_length, int x, int y) {
     Game * g = (Game*)malloc(sizeof(Game));
-    g->len = _len;
-    for(int i = 0; i < _len; i++) {
+    g->snake_length = snake_length;
+    for(int i = 0; i < snake_length; i++) {
         g->snake[i].x = x;
         g->snake[i].y = y;
     }
@@ -11,7 +19,9 @@ Game * createGame(int _len, int x, int y) {
     g->dir = NONE;
     g->state = TITLE;
 
-    printSnake(g);
+    food_init(g);
+
+    print_snake(g);
     return g;    
 }
 
@@ -29,9 +39,17 @@ void draw_title(SDL_Renderer* r, Game* g) {
     SDL_RenderCopy(r, g->title_text, NULL, &dest);
 }
 
+void drawFood(SDL_Renderer * r, Game* g) {
+    SDL_SetRenderDrawColor(r, 255, 0, 0, 255); // RGBA: Red, Green, Blue, Alpha
+    for(int i = 0; i < FOOD_LEN; i++) {
+        draw_square(r, g->food[i].x, g->food[i].y);
+    }
+}
+
 void draw_playing(SDL_Renderer * r, Game* g) {
-    drawBorder(r,WINDOW_WIDTH,WINDOW_HEIGHT);
-    drawSnake(r, g);
+    draw_border(r,WINDOW_WIDTH,WINDOW_HEIGHT);
+    drawFood(r, g);
+    draw_snake(r, g);
 }
 
 void draw(SDL_Renderer * r, Game* g) {
@@ -52,7 +70,7 @@ void draw(SDL_Renderer * r, Game* g) {
 
 }
 
-void drawSnakePart(SDL_Renderer* r, int x, int y) {
+void draw_square(SDL_Renderer* r, int x, int y) {
     // Create a rectangle
     SDL_Rect rect;
     rect.x = x*10;  // X position of the top-left corner
@@ -63,7 +81,7 @@ void drawSnakePart(SDL_Renderer* r, int x, int y) {
     SDL_RenderFillRect(r, &rect);
 }
 
-void drawBorder(SDL_Renderer* r, int width, int height) {
+void draw_border(SDL_Renderer* r, int width, int height) {
     // Set the color to blue
     SDL_SetRenderDrawColor(r, 0, 0, 255, 255); // RGBA: Red, Green, Blue, Alpha
     
@@ -88,21 +106,21 @@ void drawBorder(SDL_Renderer* r, int width, int height) {
     SDL_RenderFillRect(r, &rightBorder);
 }
 
-void drawSnake(SDL_Renderer* r, Game * g) {
+void draw_snake(SDL_Renderer* r, Game * g) {
     // Set the color to green
     SDL_SetRenderDrawColor(r, 0, 255, 0, 255); // RGBA: Red, Green, Blue, Alpha
 
-    drawSnakePart(r, g->snake[0].x, g->snake[0].y);
+    draw_square(r, g->snake[0].x, g->snake[0].y);
 
     SDL_SetRenderDrawColor(r, 0, 128, 0, 255); // RGBA: Red, Green, Blue, Alpha
 
-    for (int i = 1; i < g->len; i++) {
-        drawSnakePart(r, g->snake[i].x, g->snake[i].y);
+    for (int i = 1; i < g->snake_length; i++) {
+        draw_square(r, g->snake[i].x, g->snake[i].y);
     }
 }
 
-void printSnake(Game * g) {
-    for (int i = 0; i<g->len; i++) {
+void print_snake(Game * g) {
+    for (int i = 0; i<g->snake_length; i++) {
         printf("%d,%d\n",g->snake[i].x,g->snake[i].y);
     }
 }
@@ -127,12 +145,27 @@ void update_playing(Game * g) {
     }
 
     // iterate over snake
-    for (int i = g->len-1; i > 0; i--) {
+    for (int i = g->snake_length-1; i > 0; i--) {
         g->snake[i].x = g->snake[i-1].x;
         g->snake[i].y = g->snake[i-1].y;
     }
     g->snake[0].x += dx;
     g->snake[0].y += dy;
+
+    // check for collisions with border
+
+    // check for collisions with snake
+
+    // check for collisions with food
+    for(int i = 0; i < FOOD_LEN; i++) {
+        if (g->snake[0].x == g->food[i].x && 
+            g->snake[0].y == g->food[i].y) {
+                g->snake_length++;
+                g->food[i].x = rand() % GRID_WIDTH;
+                g->food[i].y = rand() % GRID_HEIGHT;
+                break;
+            }
+    }
 }
 
 void update(Game * g) {

@@ -10,7 +10,10 @@
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
+#define GRID_WIDTH (WINDOW_WIDTH/10)
+#define GRID_HEIGHT (WINDOW_HEIGHT/10)
 #define MAX_SNAKE_LEN (WINDOW_WIDTH*WINDOW_HEIGHT)
+#define FOOD_LEN 3
 
 typedef enum {
     NONE = 0,  // No arrow key pressed
@@ -37,7 +40,8 @@ typedef struct {
     // int max_length;
     // int cur_length;
     Vec2 snake[MAX_SNAKE_LEN];
-    int len; // length of snake
+    int snake_length; // length of snake
+    Vec2 food[FOOD_LEN];
     Direction dir;
     State state;
 
@@ -59,9 +63,9 @@ void draw(SDL_Renderer *, Game*);
 
 void draw_title(SDL_Renderer *, Game*);
 
-void drawSnake(SDL_Renderer *, Game *);
+void draw_snake(SDL_Renderer *, Game *);
 
-void drawBorder(SDL_Renderer *,int,int);
+void draw_border(SDL_Renderer *,int,int);
 
 int process_input(Game *);
 
