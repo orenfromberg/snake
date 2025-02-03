@@ -7,7 +7,7 @@ Game * createGame(int max_length, int x, int y) {
     g->head = createNode(x,y);
     g->tail = g->head;
     g->dir = NONE;
-    g->state = PLAYING;
+    g->state = INIT;
 
     // printSnake(g);
     return g;    
@@ -21,6 +21,16 @@ void printNode(Node * node) {
     printf("addr=%p, next=%p, prev=%p, (%d, %d)\n", node, node->next, node->prev, node->x, node->y);
 }
 
+void draw_init(SDL_Renderer* r, Game* g) {
+    SDL_RenderCopy(r, g->title_screen, NULL, NULL);
+    SDL_Rect dest;
+    dest.x = 320 - (g->text_surf->w / 2.0f);
+    dest.y = .75*480;
+    dest.w = g->text_surf->w;
+    dest.h = g->text_surf->h;
+    SDL_RenderCopy(r, g->title_text, NULL, &dest);
+}
+
 void draw_playing(SDL_Renderer * r, Game* g) {
     drawBorder(r,WINDOW_WIDTH,WINDOW_HEIGHT);
     drawSnake(r, g);
@@ -31,6 +41,9 @@ void draw(SDL_Renderer * r, Game* g) {
     SDL_RenderClear(r);
 
     switch(g->state) {
+        case INIT:
+            draw_init(r,g);
+            break;
         case PLAYING:
             draw_playing(r,g);
             break;
@@ -196,8 +209,23 @@ int process_input_playing(Game * game) {
     return 0;
 }
 
+int process_input_init(Game * game) {
+    SDL_Event e;
+    while (SDL_PollEvent(&e) != 0) {
+        if (e.type == SDL_QUIT) {
+            return 1;
+        } else if (e.type == SDL_KEYDOWN) {
+            game->state = PLAYING;
+            return 0;
+        }
+    }
+    return 0;
+}
+
 int process_input(Game * g) {
     switch(g->state) {
+        case INIT:
+            return process_input_init(g);
         case PLAYING:
             return process_input_playing(g);
     }

@@ -3,7 +3,7 @@ CC = gcc
 
 # Define compiler flags
 CFLAGS = -Wall -Wextra -g -I/usr/incude/SDL2
-LDFLAGS = -L/usr/lib/x86_64-linux-gnu -lSDL2
+LDFLAGS = -L/usr/lib/x86_64-linux-gnu -lSDL2 -lSDL2_image -lSDL2_ttf
 
 # Define the target executable name
 TARGET = snake
