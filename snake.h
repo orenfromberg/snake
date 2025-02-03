@@ -42,6 +42,7 @@ typedef struct {
     Vec2 snake[MAX_SNAKE_LEN];
     int snake_length; // length of snake
     Vec2 food[FOOD_LEN];
+    int score;
     Direction dir;
     State state;
 
@@ -53,6 +54,8 @@ typedef struct {
     TTF_Font* font;
 } Game;
 
+void food_init(Game *);
+
 Game* createGame(int,int,int);
 
 void destroyGame(Game*);
@@ -60,6 +63,10 @@ void destroyGame(Game*);
 void update(Game *);
 
 void draw(SDL_Renderer *, Game*);
+
+void draw_food(SDL_Renderer *, Game*);
+
+void draw_playing(SDL_Renderer *, Game*);
 
 void draw_title(SDL_Renderer *, Game*);
 
