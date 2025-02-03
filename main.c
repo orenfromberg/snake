@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
         SDL_Log("Failed to load font: %s\n", TTF_GetError()); 
     }
 
-    SDL_Color foreground = { 255, 255, 255 };
+    SDL_Color foreground = { 255, 255, 255, 255 };
 
     SDL_Surface* text_surf = TTF_RenderText_Solid(font, "press any key to begin", foreground);
 	SDL_Texture* text = SDL_CreateTextureFromSurface(r, text_surf);

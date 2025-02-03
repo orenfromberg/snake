@@ -21,7 +21,7 @@ typedef enum {
 } Direction;
 
 typedef enum {
-    INIT = 0,
+    TITLE = 0,
     PLAYING,
     DIED
 } State;
@@ -50,7 +50,7 @@ void update(Game *);
 
 void draw(SDL_Renderer *, Game*);
 
-void draw_init(SDL_Renderer *, Game*);
+void draw_title(SDL_Renderer *, Game*);
 
 void drawSnake(SDL_Renderer *, Game *);
 

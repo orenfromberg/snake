@@ -7,7 +7,7 @@ Game * createGame(int max_length, int x, int y) {
     g->head = createNode(x,y);
     g->tail = g->head;
     g->dir = NONE;
-    g->state = INIT;
+    g->state = TITLE;
 
     // printSnake(g);
     return g;    
@@ -21,7 +21,7 @@ void printNode(Node * node) {
     printf("addr=%p, next=%p, prev=%p, (%d, %d)\n", node, node->next, node->prev, node->x, node->y);
 }
 
-void draw_init(SDL_Renderer* r, Game* g) {
+void draw_title(SDL_Renderer* r, Game* g) {
     SDL_RenderCopy(r, g->title_screen, NULL, NULL);
     SDL_Rect dest;
     dest.x = 320 - (g->text_surf->w / 2.0f);
@@ -41,8 +41,8 @@ void draw(SDL_Renderer * r, Game* g) {
     SDL_RenderClear(r);
 
     switch(g->state) {
-        case INIT:
-            draw_init(r,g);
+        case TITLE:
+            draw_title(r,g);
             break;
         case PLAYING:
             draw_playing(r,g);
@@ -224,7 +224,7 @@ int process_input_init(Game * game) {
 
 int process_input(Game * g) {
     switch(g->state) {
-        case INIT:
+        case TITLE:
             return process_input_init(g);
         case PLAYING:
             return process_input_playing(g);
