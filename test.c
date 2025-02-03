@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
 #include "snake.h"
-#include "linkedlist.h"
 
 void main(int argc, char * argv) {
     Game * _game = createGame(3,640,480);

@@ -7,10 +7,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
-#include "linkedlist.h"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
+#define MAX_SNAKE_LEN (WINDOW_WIDTH*WINDOW_HEIGHT)
 
 typedef enum {
     NONE = 0,  // No arrow key pressed
@@ -27,10 +27,17 @@ typedef enum {
 } State;
 
 typedef struct {
-    Node * head;
-    Node * tail;
-    int max_length;
-    int cur_length;
+    int x;
+    int y;
+} Vec2;
+
+typedef struct {
+    // Node * head;
+    // Node * tail;
+    // int max_length;
+    // int cur_length;
+    Vec2 snake[MAX_SNAKE_LEN];
+    int len; // length of snake
     Direction dir;
     State state;
 

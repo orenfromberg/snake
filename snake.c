@@ -1,24 +1,22 @@
 #include "snake.h"
 
-Game * createGame(int max_length, int x, int y) {
+Game * createGame(int _len, int x, int y) {
     Game * g = (Game*)malloc(sizeof(Game));
-    g->max_length = max_length;
-    g->cur_length = 1;
-    g->head = createNode(x,y);
-    g->tail = g->head;
+    g->len = _len;
+    for(int i = 0; i < _len; i++) {
+        g->snake[i].x = x;
+        g->snake[i].y = y;
+    }
+
     g->dir = NONE;
     g->state = TITLE;
 
-    // printSnake(g);
+    printSnake(g);
     return g;    
 }
 
 void destroyGame(Game* g) {
-    destroyList(g->head);
-}
-
-void printNode(Node * node) {
-    printf("addr=%p, next=%p, prev=%p, (%d, %d)\n", node, node->next, node->prev, node->x, node->y);
+    free(g);
 }
 
 void draw_title(SDL_Renderer* r, Game* g) {
@@ -54,16 +52,15 @@ void draw(SDL_Renderer * r, Game* g) {
 
 }
 
-void drawNode(SDL_Renderer* r, Node * node) {
+void drawSnakePart(SDL_Renderer* r, int x, int y) {
     // Create a rectangle
     SDL_Rect rect;
-    rect.x = node->x*10;  // X position of the top-left corner
-    rect.y = node->y*10;  // Y position of the top-left corner
+    rect.x = x*10;  // X position of the top-left corner
+    rect.y = y*10;  // Y position of the top-left corner
     rect.w = 10;  // Width of the rectangle
     rect.h = 10;  // Height of the rectangle
         // Fill the rectangle with the current draw color (red)
     SDL_RenderFillRect(r, &rect);
-
 }
 
 void drawBorder(SDL_Renderer* r, int width, int height) {
@@ -95,28 +92,19 @@ void drawSnake(SDL_Renderer* r, Game * g) {
     // Set the color to green
     SDL_SetRenderDrawColor(r, 0, 255, 0, 255); // RGBA: Red, Green, Blue, Alpha
 
-    Node * cur = g->head;
-    drawNode(r, cur);
+    drawSnakePart(r, g->snake[0].x, g->snake[0].y);
 
     SDL_SetRenderDrawColor(r, 0, 128, 0, 255); // RGBA: Red, Green, Blue, Alpha
 
-    while(cur->next) {
-        cur = cur->next;
-        drawNode(r, cur);
+    for (int i = 1; i < g->len; i++) {
+        drawSnakePart(r, g->snake[i].x, g->snake[i].y);
     }
 }
 
 void printSnake(Game * g) {
-    // print all nodes
-    printf("current snake:\n");
-    Node * cur = g->head;
-    printf("head v\n");
-    printNode(cur);
-    while (cur->next) {
-        cur = cur->next;
-        printNode(cur);
+    for (int i = 0; i<g->len; i++) {
+        printf("%d,%d\n",g->snake[i].x,g->snake[i].y);
     }
-    printf("tail ^\n");
 }
 
 void update_playing(Game * g) {
@@ -138,31 +126,13 @@ void update_playing(Game * g) {
             break;
     }
 
-    // create a new head
-    Node * new = createNode(g->head->x+dx,g->head->y+dy);
-
-    // new head must point to the old head
-    new->next = g->head;
-
-    // the old head must point back to the new
-    g->head->prev = new;
-
-    // make the new node the head
-    g->head = new;
-
-    // increment the current length of the snake
-    g->cur_length++;
-
-    // cull 
-    if (g->cur_length > g->max_length) {
-        // make new tail point to prev
-        Node * tail = g->tail;
-        g->tail = g->tail->prev;
-
-        // make tail next point to NULL
-        g->tail->next = NULL;
-        destroyNode(tail);
+    // iterate over snake
+    for (int i = g->len-1; i > 0; i--) {
+        g->snake[i].x = g->snake[i-1].x;
+        g->snake[i].y = g->snake[i-1].y;
     }
+    g->snake[0].x += dx;
+    g->snake[0].y += dy;
 }
 
 void update(Game * g) {

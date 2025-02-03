@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
-#include "linkedlist.h"
 #include "snake.h"
 
 SDL_Texture *texture;
@@ -90,6 +89,7 @@ int main(int argc, char* argv[]) {
         SDL_Delay(32);
     }
 
+    destroyGame(game);
     TTF_CloseFont( font );
     SDL_DestroyTexture( texture );
     SDL_DestroyTexture( text );
