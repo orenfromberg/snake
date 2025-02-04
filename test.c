@@ -3,7 +3,7 @@
 #include "snake.h"
 
 void main(int argc, char * argv) {
-    Game * _game = createGame(3,640,480);
+    Game * _game = create_game(3,640,480);
 
     for (int i = 0; i < 10; i++) {
         update(_game);

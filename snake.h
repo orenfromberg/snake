@@ -43,6 +43,7 @@ typedef struct {
     int snake_length; // length of snake
     Vec2 food[FOOD_LEN];
     int score;
+    int top_score;
     Direction dir;
     State state;
 
@@ -56,7 +57,7 @@ typedef struct {
 
 void food_init(Game *);
 
-Game* createGame(int,int,int);
+Game* create_game(int,int,int);
 
 void destroyGame(Game*);
 

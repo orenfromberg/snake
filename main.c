@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
     // Update the screen
     SDL_RenderPresent(r);
 
-    Game * game = createGame(1,(GRID_WIDTH/2)-1,(GRID_HEIGHT/2-1));
+    Game * game = create_game(1,(GRID_WIDTH/2)-1,(GRID_HEIGHT/2-1));
 
     game->title_screen = texture;
     game->title_text = text;
@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
 
         draw(r, game);
 
-        SDL_Delay(32);
+        SDL_Delay(64);
     }
 
     destroyGame(game);

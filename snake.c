@@ -20,7 +20,7 @@ void reset_game(Game * g, int snake_length, int x, int y) {
     food_init(g);
 }
 
-Game * createGame(int snake_length, int x, int y) {
+Game * create_game(int snake_length, int x, int y) {
     Game * g = (Game*)malloc(sizeof(Game));
     g->snake_length = snake_length;
     for(int i = 0; i < snake_length; i++) {
@@ -31,6 +31,7 @@ Game * createGame(int snake_length, int x, int y) {
     g->dir = NONE;
     g->state = TITLE;
     g->score = 0;
+    g->top_score = 0;
     food_init(g);
 
     print_snake(g);
@@ -42,8 +43,10 @@ void destroyGame(Game* g) {
 }
 
 void draw_died(SDL_Renderer* r, Game* g) {
+
+    draw_playing(r,g);
     SDL_Color foreground = { 255, 255, 255, 255 };
-    SDL_Surface * s_text = TTF_RenderText_Solid(g->font, "you died", foreground);
+    SDL_Surface * s_text = TTF_RenderText_Solid(g->font, "You died! Press space to play again.", foreground);
     SDL_Texture* t_text = SDL_CreateTextureFromSurface(r, s_text);
     SDL_Rect dest;
     dest.x = 320 - (s_text->w / 2.0f);
@@ -56,10 +59,14 @@ void draw_died(SDL_Renderer* r, Game* g) {
 
 void draw_score(SDL_Renderer* r, Game* g) {
     char c_score[20];
+    char c_top_score[20];
     sprintf(c_score, "%05d", g->score);
+    sprintf(c_top_score, "Top score: %05d", g->top_score);
     SDL_Color foreground = { 255, 255, 255, 255 };
     SDL_Surface * score = TTF_RenderText_Solid(g->font, c_score, foreground);
+    SDL_Surface * top_score = TTF_RenderText_Solid(g->font, c_top_score, foreground);
     SDL_Texture* text = SDL_CreateTextureFromSurface(r, score);
+    SDL_Texture* top_score_text = SDL_CreateTextureFromSurface(r, top_score);
     SDL_Rect dest;
     dest.x = 320 - (score->w / 2.0f);
     dest.y = .75*480;
@@ -67,6 +74,13 @@ void draw_score(SDL_Renderer* r, Game* g) {
     dest.h = score->h;
     SDL_FreeSurface(score);
     SDL_RenderCopy(r, text, NULL, &dest);
+    dest.x = 320 - (top_score->w / 2.0f);
+    dest.y = 0;
+    dest.w = top_score->w;
+    dest.h = top_score->h;
+    SDL_FreeSurface(top_score);
+    SDL_RenderCopy(r, top_score_text, NULL, &dest);
+
 }
 
 void draw_title(SDL_Renderer* r, Game* g) {
@@ -150,17 +164,23 @@ void draw_border(SDL_Renderer* r, int width, int height) {
     SDL_RenderFillRect(r, &rightBorder);
 }
 
+void increment_score(Game * g) {
+    g->score++;
+    if (g->score > g->top_score) {
+        g->top_score = g->score;
+    }
+}
+
 void draw_snake(SDL_Renderer* r, Game * g) {
-    // Set the color to green
-    SDL_SetRenderDrawColor(r, 0, 255, 0, 255); // RGBA: Red, Green, Blue, Alpha
-
-    draw_square(r, g->snake[0].x, g->snake[0].y);
-
     SDL_SetRenderDrawColor(r, 0, 128, 0, 255); // RGBA: Red, Green, Blue, Alpha
 
     for (int i = 1; i < g->snake_length; i++) {
         draw_square(r, g->snake[i].x, g->snake[i].y);
     }
+        // Set the color to green
+    SDL_SetRenderDrawColor(r, 0, 255, 0, 255); // RGBA: Red, Green, Blue, Alpha
+
+    draw_square(r, g->snake[0].x, g->snake[0].y);
 }
 
 void print_snake(Game * g) {
@@ -188,6 +208,18 @@ void update_playing(Game * g) {
             break;
     }
 
+    // check for collisions with food
+    for(int i = 0; i < FOOD_LEN; i++) {
+        if (g->snake[0].x == g->food[i].x && 
+            g->snake[0].y == g->food[i].y) {
+                g->snake_length++;
+                g->food[i].x = (rand() % (GRID_WIDTH-2)) + 1;
+                g->food[i].y = (rand() % (GRID_HEIGHT-2)) + 1;
+                increment_score(g);
+                break;
+            }
+    }
+
     // iterate over snake
     for (int i = g->snake_length-1; i > 0; i--) {
         g->snake[i].x = g->snake[i-1].x;
@@ -209,18 +241,6 @@ void update_playing(Game * g) {
             g->snake[0].y == g->snake[i].y) {
                 g->state = DIED;
                 return;
-            }
-    }
-
-    // check for collisions with food
-    for(int i = 0; i < FOOD_LEN; i++) {
-        if (g->snake[0].x == g->food[i].x && 
-            g->snake[0].y == g->food[i].y) {
-                g->snake_length++;
-                g->food[i].x = rand() % GRID_WIDTH;
-                g->food[i].y = rand() % GRID_HEIGHT;
-                g->score++;
-                break;
             }
     }
 }
@@ -275,8 +295,13 @@ int process_input_died(Game * game) {
         if (e.type == SDL_QUIT) {
             return 1;
         } else if (e.type == SDL_KEYDOWN) {
-            reset_game(game, 1, (GRID_WIDTH/2)-1, (GRID_HEIGHT/2)-1);
-            return 0;
+            switch (e.key.keysym.sym) {
+                case SDLK_SPACE:  // Check for Escape key
+                    reset_game(game, 1, (GRID_WIDTH/2)-1, (GRID_HEIGHT/2)-1);
+                    return 0;
+                case SDLK_ESCAPE:
+                    return 1;
+            }
         }
     }
     return 0;    
