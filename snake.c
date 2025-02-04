@@ -1,40 +1,31 @@
 #include "snake.h"
 
+void get_random_location(Vec2* loc) {
+    loc->x = (rand() % (GRID_WIDTH-2))+1;
+    loc->y = (rand() % (GRID_HEIGHT-2))+1;
+}
+
 void food_init(Game * g) {
     for (int i = 0; i < FOOD_LEN; i++) {
-        g->food[i].x = rand() % GRID_WIDTH;
-        g->food[i].y = rand() % GRID_HEIGHT;
-        printf("food %d: (%d,%d)\n", i, g->food[i].x, g->food[i].y);
+        get_random_location(&(g->food[i]));
     }
 }
 
-void reset_game(Game * g, int snake_length, int x, int y) {
+void reset_game(Game * g, int x, int y) {
     g->snake_length = 1;
-    for(int i = 0; i < snake_length; i++) {
-        g->snake[i].x = x;
-        g->snake[i].y = y;
-    }
+    g->snake[0].x = x;
+    g->snake[0].y = y;
     g->dir = NONE;
     g->state = PLAYING;
     g->score = 0;
     food_init(g);
 }
 
-Game * create_game(int snake_length, int x, int y) {
+Game * create_game(int x, int y) {
     Game * g = (Game*)malloc(sizeof(Game));
-    g->snake_length = snake_length;
-    for(int i = 0; i < snake_length; i++) {
-        g->snake[i].x = x;
-        g->snake[i].y = y;
-    }
-
-    g->dir = NONE;
-    g->state = TITLE;
-    g->score = 0;
     g->top_score = 0;
-    food_init(g);
-
-    print_snake(g);
+    reset_game(g, x, y);
+    g->state = TITLE;
     return g;    
 }
 
@@ -43,7 +34,6 @@ void destroyGame(Game* g) {
 }
 
 void draw_died(SDL_Renderer* r, Game* g) {
-
     draw_playing(r,g);
     SDL_Color foreground = { 255, 255, 255, 255 };
     SDL_Surface * s_text = TTF_RenderText_Solid(g->font, "You died! Press space to play again.", foreground);
@@ -74,13 +64,13 @@ void draw_score(SDL_Renderer* r, Game* g) {
     dest.h = score->h;
     SDL_FreeSurface(score);
     SDL_RenderCopy(r, text, NULL, &dest);
-    dest.x = 320 - (top_score->w / 2.0f);
+    // dest.x = 320 - (top_score->w / 2.0f);
+    dest.x = 0;
     dest.y = 0;
     dest.w = top_score->w;
     dest.h = top_score->h;
     SDL_FreeSurface(top_score);
     SDL_RenderCopy(r, top_score_text, NULL, &dest);
-
 }
 
 void draw_title(SDL_Renderer* r, Game* g) {
@@ -213,10 +203,8 @@ void update_playing(Game * g) {
         if (g->snake[0].x == g->food[i].x && 
             g->snake[0].y == g->food[i].y) {
                 g->snake_length++;
-                g->food[i].x = (rand() % (GRID_WIDTH-2)) + 1;
-                g->food[i].y = (rand() % (GRID_HEIGHT-2)) + 1;
+                get_random_location(&(g->food[i]));
                 increment_score(g);
-                break;
             }
     }
 
@@ -225,6 +213,7 @@ void update_playing(Game * g) {
         g->snake[i].x = g->snake[i-1].x;
         g->snake[i].y = g->snake[i-1].y;
     }
+    // update head
     g->snake[0].x += dx;
     g->snake[0].y += dy;
 
@@ -246,10 +235,8 @@ void update_playing(Game * g) {
 }
 
 void update(Game * g) {
-    switch(g->state) {
-        case PLAYING:
-            update_playing(g);
-            break;
+    if(g->state == PLAYING) {
+        update_playing(g);
     }
 }
 
@@ -261,19 +248,15 @@ int process_input_playing(Game * game) {
         } else if (e.type == SDL_KEYDOWN) {
             switch (e.key.keysym.sym) {
                 case SDLK_UP:
-                    printf("Up arrow pressed!\n");
                     game->dir = UP;
                     break;
                 case SDLK_DOWN:
-                    printf("Down arrow pressed!\n");
                     game->dir = DOWN;
                     break;
                 case SDLK_LEFT:
-                    printf("Left arrow pressed!\n");
                     game->dir = LEFT;
                     break;
                 case SDLK_RIGHT:
-                    printf("Right arrow pressed!\n");
                     game->dir = RIGHT;
                     break;
                 case SDLK_ESCAPE:  // Check for Escape key
@@ -297,7 +280,7 @@ int process_input_died(Game * game) {
         } else if (e.type == SDL_KEYDOWN) {
             switch (e.key.keysym.sym) {
                 case SDLK_SPACE:  // Check for Escape key
-                    reset_game(game, 1, (GRID_WIDTH/2)-1, (GRID_HEIGHT/2)-1);
+                    reset_game(game, (GRID_WIDTH/2)-1, (GRID_HEIGHT/2)-1);
                     return 0;
                 case SDLK_ESCAPE:
                     return 1;

@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
         return 1;
 	}
 
-    font = TTF_OpenFont("DejaVuSansMono.ttf", 24);
+    font = TTF_OpenFont("DejaVuSansMono.ttf", 20);
     if ( !font ) {
         SDL_Log("Failed to load font: %s\n", TTF_GetError()); 
     }
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
     // Update the screen
     SDL_RenderPresent(r);
 
-    Game * game = create_game(1,(GRID_WIDTH/2)-1,(GRID_HEIGHT/2-1));
+    Game * game = create_game((GRID_WIDTH/2)-1,(GRID_HEIGHT/2-1));
 
     game->title_screen = texture;
     game->title_text = text;
