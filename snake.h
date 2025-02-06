@@ -51,6 +51,9 @@ typedef struct {
     State state;
 
     //TODO add window height, width
+    int window_height;
+    int window_width;
+
     // TODO add framerate speed/delay
     SDL_Texture * title_screen;
     SDL_Texture * title_text;

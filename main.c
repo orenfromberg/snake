@@ -12,7 +12,7 @@ SDL_Texture *texture;
 TTF_Font* font;
 
 int main(int argc, char* argv[]) {
-    printf("%d,%p",argc,argv);
+    // printf("%d,%p",argc,argv);
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         SDL_Log("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
@@ -29,7 +29,13 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("SDL Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow(
+        "Snake!", 
+        SDL_WINDOWPOS_UNDEFINED, 
+        SDL_WINDOWPOS_UNDEFINED, 
+        WINDOW_WIDTH, 
+        WINDOW_HEIGHT, 
+        SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (window == NULL) {
         SDL_Log("Window could not be created! SDL Error: %s\n", SDL_GetError());
         return 1;
@@ -57,7 +63,7 @@ int main(int argc, char* argv[]) {
         return 1;
 	}
 
-    font = TTF_OpenFont("DejaVuSansMono.ttf", 20);
+    font = TTF_OpenFont("DejaVuSansMono.ttf", 60);
     if ( !font ) {
         SDL_Log("Failed to load font: %s\n", TTF_GetError()); 
     }
@@ -71,6 +77,9 @@ int main(int argc, char* argv[]) {
     SDL_RenderPresent(r);
 
     Game * game = create_game((GRID_WIDTH/2)-1,(GRID_HEIGHT/2-1));
+
+    SDL_GetWindowSize(window, &(game->window_width), &(game->window_height));
+    printf("window is %d x %d\n", game->window_width, game->window_height);
 
     game->title_screen = texture;
     game->title_text = text;
@@ -90,9 +99,9 @@ int main(int argc, char* argv[]) {
     }
 
     destroyGame(game);
-    TTF_CloseFont( font );
-    SDL_DestroyTexture( texture );
-    SDL_DestroyTexture( text );
+    TTF_CloseFont(font);
+    SDL_DestroyTexture(texture);
+    SDL_DestroyTexture(text);
 	texture = NULL;
     text = NULL;
     SDL_DestroyRenderer(r);
