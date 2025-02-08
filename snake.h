@@ -8,6 +8,8 @@
 #include <time.h>
 #include <stdbool.h>
 
+#include "snake_math.h"
+
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 #define GRID_WIDTH (WINDOW_WIDTH/10)
@@ -30,8 +32,8 @@ typedef enum {
 } State;
 
 typedef struct {
-    int x;
-    int y;
+    float x;
+    float y;
 } Vec2;
 
 typedef struct {
@@ -57,6 +59,17 @@ typedef struct {
     SDL_Surface * text_surf;
     TTF_Font* font;
 } Game;
+
+// snake, food, gameboard,
+// current score, top score
+typedef struct {
+    Matrix3x3 transform;
+    Vec2 verts[MAX_SNAKE_LEN];
+    void (*process_input)();
+    void (*draw)();
+    void (*update)(Game *);
+    // RGBA colors[MAX_SNAKE_LEN];
+} Entity;
 
 void food_init(Game *);
 

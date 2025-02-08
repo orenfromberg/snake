@@ -9,7 +9,7 @@ LDFLAGS = -L/usr/lib/x86_64-linux-gnu -lSDL2 -lSDL2_image -lSDL2_ttf
 TARGET = snake
 
 # Define the source files
-SOURCES = main.c snake.c
+SOURCES = main.c snake.c snake_math.c
 
 # Define the object files (automatically generated)
 OBJECTS = $(SOURCES:.c=.o)
@@ -22,8 +22,8 @@ $(TARGET): $(OBJECTS)
 %.o: %.c
 		$(CC) $(CFLAGS) -c $< -o $@
 
-test: test.o snake.o
-		$(CC) $(CFLAGS) test.o snake.o $(LDFLAGS) -o test 
+test: test.o snake.o snake_math.o
+		$(CC) $(CFLAGS) test.o snake.o snake_math.o $(LDFLAGS) -o test 
 
 # Clean rule (removes the compiled files)
 clean:

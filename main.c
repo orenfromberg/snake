@@ -12,7 +12,7 @@ SDL_Texture *texture;
 TTF_Font* font;
 
 int main(int argc, char* argv[]) {
-    printf("%d,%p",argc,argv);
+    printf("%d, %p",argc,argv);
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         SDL_Log("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("SDL Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow("Snake!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     if (window == NULL) {
         SDL_Log("Window could not be created! SDL Error: %s\n", SDL_GetError());
         return 1;

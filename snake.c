@@ -175,7 +175,7 @@ void draw_snake(SDL_Renderer* r, Game * g) {
 
 void print_snake(Game * g) {
     for (int i = 0; i<g->snake_length; i++) {
-        printf("%d,%d\n",g->snake[i].x,g->snake[i].y);
+        printf("%f,%f\n",g->snake[i].x,g->snake[i].y);
     }
 }
 
