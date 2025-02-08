@@ -20,11 +20,33 @@ Matrix3x3 translate(float x, float y) {
     return result;
 }
 
+void translate_mat(Matrix3x3* m, float x, float y) {
+    Matrix3x3 n = translate(x,y);
+    Matrix3x3 result = multiply_matrices(m,&n);
+    //copy result into m
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            m->data[i][j] = result.data[i][j];
+        }
+    }
+}
+
 Matrix3x3 scale(float x, float y) {
     Matrix3x3 result = identity_matrix();
     result.data[0][0] = x;
     result.data[1][1] = y;
     return result;
+}
+
+void scale_mat(Matrix3x3* m, float a, float b) {
+    Matrix3x3 n = scale(a,b);
+    Matrix3x3 result = multiply_matrices(m,&n);
+    //copy result into m
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            m->data[i][j] = result.data[i][j];
+        }
+    }
 }
 
 void print_matrix(const Matrix3x3 *m)

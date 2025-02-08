@@ -314,3 +314,19 @@ int process_input(Game * g) {
     }
     return 0;
 }
+
+Entity * create_entity() {
+    Entity * new_entity = (Entity*)malloc(sizeof(Entity));
+    // set transform to identity
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            new_entity->transform.data[i][j] = (i == j) ? 1.0f: 0.0f;
+        }
+    }
+    new_entity->init = NULL;
+    return new_entity;
+}
+
+void destroy_entity(Entity * e) {
+    free(e);
+}

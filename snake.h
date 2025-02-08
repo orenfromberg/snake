@@ -60,14 +60,20 @@ typedef struct {
     TTF_Font* font;
 } Game;
 
+typedef struct {
+    Vec2 position;
+    RGBA color;
+} Vertex;
+
 // snake, food, gameboard,
 // current score, top score
 typedef struct {
     Matrix3x3 transform;
-    Vec2 verts[MAX_SNAKE_LEN];
-    void (*process_input)();
-    void (*draw)();
-    void (*update)(Game *);
+    Vertex verts[MAX_SNAKE_LEN];
+    void (*init)(void *);
+    void (*process_input)(void *);
+    void (*draw)(SDL_Renderer * r, void *);
+    void (*update)(void *);
     // RGBA colors[MAX_SNAKE_LEN];
 } Entity;
 
@@ -98,5 +104,8 @@ int process_input(Game *);
 int process_input_playing(Game *);
 
 int process_input_init(Game *);
+
+Entity * create_entity();
+void destroy_entity();
 
 #endif
