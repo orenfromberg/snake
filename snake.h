@@ -71,10 +71,8 @@ typedef struct {
     Matrix3x3 transform;
     Vertex verts[MAX_SNAKE_LEN];
     void (*init)(void *);
-    void (*process_input)(void *);
     void (*draw)(SDL_Renderer * r, void *);
     void (*update)(void *);
-    // RGBA colors[MAX_SNAKE_LEN];
 } Entity;
 
 void food_init(Game *);

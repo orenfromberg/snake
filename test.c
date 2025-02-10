@@ -55,16 +55,15 @@ int main(int argc, char ** argv) {
 
     Entity * square = create_entity();
     square->init = square_init;
-    square->init(square);
-    // while (1) {
+    if (square->init != NULL) {
+        square->init(square);
+    }    // while (1) {
     //     // if (square->(*process_input)(square)) {
     //     //     break;
     //     // }
 
-    //     // update(game);
     //     // square->(*update)(square);
 
-    //     // draw(r, game);
     //     // square->(*draw)(r, square);
 
     //     SDL_Delay(64);
