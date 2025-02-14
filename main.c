@@ -77,16 +77,21 @@ int main(int argc, char* argv[]) {
     game->font = font;
     game->text_surf = text_surf;
 
+    Uint64 prev_time = SDL_GetTicks64(), cur_time;
+    float deltaTime = 0.0f;
     while (1) {
         if (process_input(game)) {
             break;
         }
 
-        update(game);
+        cur_time = SDL_GetTicks64();
+        deltaTime = (float)(cur_time - prev_time);
+        prev_time = cur_time;
+        update(game, deltaTime);
 
         draw(r, game);
 
-        SDL_Delay(64);
+        // SDL_Delay(64);
     }
 
     destroyGame(game);

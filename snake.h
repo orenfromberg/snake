@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include <stdbool.h>
 
 #include "snake_math.h"
@@ -45,6 +46,7 @@ typedef struct {
 
 typedef struct {
     Vec2 snake[MAX_SNAKE_LEN];
+    Vec2 cur_pos;
     int snake_length;
     Vec2 food[FOOD_LEN];
     int score;
@@ -77,7 +79,7 @@ Game* create_game(int,int);
 
 void destroyGame(Game*);
 
-void update(Game *);
+void update(Game *, float);
 
 void draw(SDL_Renderer *, Game*);
 
@@ -91,7 +93,7 @@ void draw_snake(SDL_Renderer *, Game *);
 
 void draw_border(SDL_Renderer *,int,int);
 
-void draw_square(SDL_Renderer *,int,int);
+void draw_square(SDL_Renderer *,float,float,float);
 
 int process_input(Game *);
 

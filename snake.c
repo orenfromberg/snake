@@ -18,6 +18,8 @@ void reset_game(Game * g, int x, int y) {
     g->dir = NONE;
     g->state = PLAYING;
     g->score = 0;
+    g->cur_pos.x = x;
+    g->cur_pos.y = y;
     food_init(g);
 }
 
@@ -86,7 +88,7 @@ void draw_title(SDL_Renderer* r, Game* g) {
 void draw_food(SDL_Renderer * r, Game* g) {
     SDL_SetRenderDrawColor(r, 255, 0, 0, 255); // RGBA: Red, Green, Blue, Alpha
     for(int i = 0; i < FOOD_LEN; i++) {
-        draw_square(r, g->food[i].x, g->food[i].y);
+        draw_square(r, g->food[i].x, g->food[i].y, 10.0f);
     }
 }
 
@@ -118,15 +120,16 @@ void draw(SDL_Renderer * r, Game* g) {
 
 }
 
-void draw_square(SDL_Renderer* r, int x, int y) {
+void draw_square(SDL_Renderer* r, float x, float y, float size) {
     // Create a rectangle
-    SDL_Rect rect;
-    rect.x = x*10;  // X position of the top-left corner
-    rect.y = y*10;  // Y position of the top-left corner
-    rect.w = 10;  // Width of the rectangle
-    rect.h = 10;  // Height of the rectangle
+    SDL_FRect rect;
+    rect.x = x*10.0f;  // X position of the top-left corner
+    rect.y = y*10.0f;  // Y position of the top-left corner
+    rect.w = size;  // Width of the rectangle
+    rect.h = size;  // Height of the rectangle
         // Fill the rectangle with the current draw color (red)
-    SDL_RenderFillRect(r, &rect);
+    // SDL_RenderFillRect(r, &rect);
+    SDL_RenderFillRectF(r, &rect);
 }
 
 void draw_border(SDL_Renderer* r, int width, int height) {
@@ -165,12 +168,14 @@ void draw_snake(SDL_Renderer* r, Game * g) {
     SDL_SetRenderDrawColor(r, 0, 128, 0, 255); // RGBA: Red, Green, Blue, Alpha
 
     for (int i = 1; i < g->snake_length; i++) {
-        draw_square(r, g->snake[i].x, g->snake[i].y);
+        draw_square(r, g->snake[i].x, g->snake[i].y, 10.0f);
     }
         // Set the color to green
     SDL_SetRenderDrawColor(r, 0, 255, 0, 255); // RGBA: Red, Green, Blue, Alpha
 
-    draw_square(r, g->snake[0].x, g->snake[0].y);
+    // draw head
+    // draw_square(r, g->snake[0].x, g->snake[0].y);
+    draw_square(r, g->cur_pos.x, g->cur_pos.y, 10.0f);
 }
 
 void print_snake(Game * g) {
@@ -179,7 +184,32 @@ void print_snake(Game * g) {
     }
 }
 
-void update_playing(Game * g) {
+float distance(Vec2 * a, Vec2 * b) {
+    return sqrtf((b->x-a->x)*(b->x-a->x)+(b->y-a->y)*(b->y-a->y));
+}
+
+void update_playing(Game * g, float d) {
+    // if it hasn't reached its destination yet
+    if (g->cur_pos.x != (float)(g->snake[0].x) || g->cur_pos.y != (float)(g->snake[0].y)) {
+        float dxf = (float)g->snake[0].x - g->cur_pos.x;
+        float dyf = (float)g->snake[0].y - g->cur_pos.y;
+        Vec2 next;
+        float speed = 0.01f;
+        next.x = (g->cur_pos.x + (dxf != 0 ? 1 : 0)*(dxf > 0 ? 1 : -1) * d * speed);
+        next.y = (g->cur_pos.y + (dyf != 0 ? 1 : 0)*(dyf > 0 ? 1 : -1) * d * speed);
+
+        // if the distance between cur_pos and next is > distance between curpos and snake[0]
+        // set curpos to snake[0]
+        if (distance(&(g->cur_pos),&next) > distance(&(g->cur_pos), &(g->snake[0]))) {
+            g->cur_pos.x = g->snake[0].x;
+            g->cur_pos.y = g->snake[0].y;
+        } else {
+            g->cur_pos.x = next.x;
+            g->cur_pos.y = next.y;
+        }
+        return;
+    }
+
     int dx = 0, dy = 0;
     switch(g->dir) {
         case UP:
@@ -234,9 +264,9 @@ void update_playing(Game * g) {
     }
 }
 
-void update(Game * g) {
+void update(Game * g, float delta) {
     if(g->state == PLAYING) {
-        update_playing(g);
+        update_playing(g, delta);
     }
 }
 
